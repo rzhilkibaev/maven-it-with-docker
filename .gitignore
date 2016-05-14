@@ -1,10 +1,20 @@
+# Java
 *.class
+
+# Eclipse
 .settings
 .classpath
 .project
+
+# Maven
 target
 test-output
 
+# Vagrant
+.vagrant
+
+# Vim
+.*.sw*
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

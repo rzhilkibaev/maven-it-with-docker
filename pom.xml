@@ -26,6 +26,43 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>vagrant-up</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>vagrant</executable>
+                            <arguments>
+                                <argument>up</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>vagrant-destroy</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>vagrant</executable>
+                            <arguments>
+                                <argument>destroy</argument>
+                                <argument>-f</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${vagrant.skip}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>port-allocator-maven-plugin</artifactId>
                 <version>1.2</version>
@@ -38,7 +75,7 @@
                         <configuration>
                             <ports>
                                 <port>
-                                    <name>mongodb.port</name>
+                                    <name>MongoDbServiceStartupLogIT.port</name>
                                 </port>
                             </ports>
                         </configuration>
@@ -46,16 +83,17 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jolokia</groupId>
+                <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.13.7</version>
+                <version>0.15.1</version>
                 <configuration>
+                    <dockerHost>${docker.host.url}</dockerHost>
                     <images>
                         <image>
                             <name>mongo:latest</name>
                             <run>
                                 <ports>
-                                    <port>${mongodb.port}:27017</port>
+                                    <port>${MongoDbServiceStartupLogIT.port}:27017</port>
                                 </ports>
                                 <wait>
                                     <log>waiting for connections on port</log>
@@ -87,7 +125,8 @@
                 <version>2.19.1</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <mongodb.port>${mongodb.port}</mongodb.port>
+                        <mongodb.host>${docker.host.address}</mongodb.host>
+                        <MongoDbServiceStartupLogIT.port>${MongoDbServiceStartupLogIT.port}</MongoDbServiceStartupLogIT.port>
                     </systemPropertyVariables>
                     <!--
                     Since the tests set system variables (ports) we cannot reuse the same JVM for all tests.
@@ -122,13 +161,36 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <properties>
+                <vagrant.skip>true</vagrant.skip>
+                <docker.host.address>localhost</docker.host.address>
+                <docker.host.url>unix:///var/run/docker.sock</docker.host.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <vagrant.skip>false</vagrant.skip>
+                <docker.host.address>192.168.60.30</docker.host.address>
+                <docker.host.url>tcp://${docker.host.address}:2375</docker.host.url>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
