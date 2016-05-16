@@ -9,17 +9,23 @@ When using Docker you can run your service in a consistent way on any machine. T
 
 ## Implementation
 I use:
-
  - [io.fabric8:docker-maven-plugin](https://github.com/fabric8io/docker-maven-plugin) to run Docker containers
  - `port-allocator-maven-plugin` to find random unused ports for services
- - `exec-maven-plugin` to create a VM with `vagrant` for builds done where docker is not available natively (windows, macos)
+ - `exec-maven-plugin` to create a VM with `vagrant` for builds done where docker is not available natively (Windows, Mac)
 
 # Prerequisites
-For a linux machine you'll need to have [docker engine](https://docs.docker.com/engine/installation/) installed. For anything else you'll need to install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html).
+For a Linux machine you'll need to have [docker engine](https://docs.docker.com/engine/installation/) installed. For anything else you'll need to install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html).
 
 # How to run the tests
 
-
     $ mvn clean verify
 
-During the build Maven will use vagrant to create a VM if docker engine is not supported natively. When the build is executed first time it will download VM/images. Subsequent executions take a lot less time.
+During the build Maven will:
+ 1. use vagrant to create a VM if docker engine is not supported natively (this step is skipped on Linux)
+ 2. find random unused ports on the host machine for each test
+ 3. run a docker container for each test with previously allocated ports bound
+ 4. run the tests against the services in containers
+ 5. destroy containers
+ 6. destroy the VM (skipped on Linux)
+
+When the build is executed first time it will download VM/images. Subsequent executions take a lot less time.
