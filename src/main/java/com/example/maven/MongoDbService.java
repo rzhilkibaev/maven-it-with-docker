@@ -6,12 +6,21 @@ import java.util.Set;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
+/**
+ * This service let's us talk to MongoDB.
+ */
 public class MongoDbService {
 
+	/**
+	 * Get collections in local database.
+	 */
 	public Set<String> getLocalCollections(String mongoUri) {
 		return getCollections(mongoUri, "local");
 	}
 
+	/**
+	 * Get collections in admin database.
+	 */
 	public Set<String> getAdminCollections(String mongoUri) {
 		return getCollections(mongoUri, "admin");
 	}
