@@ -100,6 +100,17 @@
                                 </wait>
                             </run>
                         </image>
+                        <image>
+                            <name>mongo:latest</name>
+                            <run>
+                                <ports>
+                                    <port>${MongoDbServiceAdminDbIT.port}:27017</port>
+                                </ports>
+                                <wait>
+                                    <log>waiting for connections on port</log>
+                                </wait>
+                            </run>
+                        </image>
                     </images>
                 </configuration>
                 <executions>
@@ -127,6 +138,7 @@
                     <systemPropertyVariables>
                         <mongodb.host>${docker.host.address}</mongodb.host>
                         <MongoDbServiceStartupLogIT.port>${MongoDbServiceStartupLogIT.port}</MongoDbServiceStartupLogIT.port>
+                        <MongoDbServiceAdminDbIT.port>${MongoDbServiceAdminDbIT.port}</MongoDbServiceAdminDbIT.port>
                     </systemPropertyVariables>
                     <!--
                     Since the tests set system variables (ports) we cannot reuse the same JVM for all tests.

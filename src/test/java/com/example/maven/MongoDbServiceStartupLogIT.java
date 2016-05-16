@@ -21,4 +21,10 @@ public class MongoDbServiceStartupLogIT {
 		Assertions.assertThat(actualCollectionNames).containsExactly("startup_log");
 	}
 
+	@Test
+	public void ensureAdminDbEmpty() {
+		Set<String> actualCollectionNames = new MongoDbService().getAdminCollections(MONGO_URI);
+		Assertions.assertThat(actualCollectionNames).isEmpty();
+	}
+
 }
