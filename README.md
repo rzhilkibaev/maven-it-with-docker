@@ -17,7 +17,6 @@ I use:
 For a Linux machine you'll need to have [docker engine](https://docs.docker.com/engine/installation/) installed. For anything else you'll need to install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html).
 
 # How to run the tests
-
     $ mvn clean verify
 
 During the build Maven will:
@@ -29,3 +28,16 @@ During the build Maven will:
  6. destroy the VM (skipped on Linux)
 
 When the build is executed first time it will download VM/images. Subsequent executions take a lot less time.
+
+# How to debug test
+## Full maven build debugging
+    mvn -Dmaven.failsafe.debug clean verify
+This will make Maven pause the build right before the tests until you establish a debugging session on port `5005`. More details can be found on [Maven Failsafe Plugin page](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/debugging.html)
+## Quick debugging
+You can also run the containers yourself and debug the tests from you IDE as you would any simple unit tests. For example `MongoDbServiceStartupLogIT` test needs a mongodb service. Run
+
+    $ docker run -p 27017:27017 mongo:3.2.6
+ Then just run the test from your IDE as it if was a vanilla unit test.
+ 
+# Troubleshooting
+If you cannot start a VM [enable virtualization in your BIOS settings](http://askubuntu.com/a/256853).
