@@ -16,7 +16,7 @@ I use:
 # Prerequisites
 For a Linux machine you'll need to have [docker engine](https://docs.docker.com/engine/installation/) installed. For anything else you'll need to install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html).
 
-# How to run the tests
+# How to run tests
     $ mvn clean verify
 
 During the build Maven will:
@@ -29,7 +29,7 @@ During the build Maven will:
 
 When the build is executed first time it will download VM/images. Subsequent executions take a lot less time.
 
-# How to debug test
+# How to debug tests
 ## Full maven build debugging
     mvn -Dmaven.failsafe.debug clean verify
 This will make Maven pause the build right before the tests until you establish a debugging session on port `5005`. More details can be found on [Maven Failsafe Plugin page](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/debugging.html)
